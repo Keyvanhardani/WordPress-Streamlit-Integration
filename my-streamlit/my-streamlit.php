@@ -29,6 +29,7 @@ function my_streamlit_plugin_page() {
     ?>
     <div class="wrap">
         <h1><span class="dashicons dashicons-media-code"></span> Streamlit Plugin Settings</h1>
+        <?php settings_errors('my_streamlit_plugin_settings'); ?>
         <form method="post" action="options.php" style="max-width:600px;">
             <?php
             settings_fields('my_streamlit_plugin_settings');
@@ -38,6 +39,10 @@ function my_streamlit_plugin_page() {
                 <tr valign="top">
                 <th scope="row">API Key</th>
                 <td><input type="text" name="api_key" style="width:100%;" value="<?php echo esc_attr(get_option('api_key')); ?>" /></td>
+                </tr>
+                <tr valign="top">
+                <th scope="row">JWT Expire Time (in minutes)</th>
+                <td><input type="number" name="jwt_expire_time" style="width:100%;" value="<?php echo esc_attr(get_option('jwt_expire_time')); ?>" /></td>
                 </tr>
             </table>
             <?php submit_button(); ?>
@@ -49,12 +54,8 @@ function my_streamlit_plugin_page() {
 }
 
 function my_streamlit_plugin_settings() {
-    register_setting('my_streamlit_plugin_settings', 'api_key', 'my_streamlit_plugin_settings_callback');
-}
-
-function my_streamlit_plugin_settings_callback($input) {
-    add_settings_error('my_streamlit_plugin_settings', esc_attr('settings_updated'), 'Settings updated successfully.', 'updated');
-    return $input;
+    register_setting('my_streamlit_plugin_settings', 'api_key');
+    register_setting('my_streamlit_plugin_settings', 'jwt_expire_time');
 }
 
 add_action('admin_init', 'my_streamlit_plugin_settings');
@@ -65,7 +66,8 @@ add_action('admin_init', 'my_streamlit_plugin_settings');
 
 add_filter('jwt_auth_expire', 'set_jwt_auth_expire');
 function set_jwt_auth_expire() {
-  return time() + (60*30);  // 30 minutes
+  $expire_time = get_option('jwt_expire_time', 30);  // Default to 30 minutes
+  return time() + (60 * $expire_time);
 }
 
 add_action('rest_api_init', function () {
