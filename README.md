@@ -70,8 +70,8 @@ else:
 
     with col3:
         st.write("")
-        
-        ```
+```
+
 # Usage
 Once the plugin is set up and the code integrated, the Streamlit application will present a login form to any user who is not logged in. The user can log in with their WordPress username and password. If the login is successful, the Streamlit application will run the main() function, which can be customized as needed.
 
