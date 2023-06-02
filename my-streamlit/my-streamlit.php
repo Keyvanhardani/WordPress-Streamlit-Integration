@@ -68,14 +68,18 @@ function set_jwt_auth_expire() {
   return time() + (60*30);  // 30 minutes
 }
 
-add_action('rest_api_init', 'add_api_key_check');
-function add_api_key_check() {
-    $request_headers = getallheaders();
-    $api_key = get_option('api_key');
+add_action('rest_api_init', function () {
+    register_rest_route('myplugin/v1', '/endpoint', array(
+        'methods' => 'GET',
+        'callback' => 'my_endpoint_callback',
+        'permission_callback' => 'my_api_key_check'
+    ));
+});
 
-    if (strpos($_SERVER['REQUEST_URI'], '/jwt-auth/v1/token') !== false) {
-        if (!isset($request_headers['X-API-KEY']) || $request_headers['X-API-KEY'] != $api_key) {
-            wp_die('Incorrect API Key');
-        }
+function my_api_key_check() {
+    if (!isset($_SERVER['HTTP_X_API_KEY']) || $_SERVER['HTTP_X_API_KEY'] != get_option('api_key')) {
+        return new WP_Error('rest_forbidden', 'Incorrect API Key', array('status' => 403));
     }
+
+    return true;
 }
