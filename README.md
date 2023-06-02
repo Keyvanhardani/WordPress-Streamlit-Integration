@@ -2,17 +2,18 @@
 Description
 This project enables WordPress users authentication in Streamlit applications. With this plugin and a bit of code, you can set up your Streamlit server to accept JWT (JSON Web Tokens) from a WordPress server. This way, you can integrate a login system into your Streamlit web application.
 
-#  Installation
-1. WordPress Plugin
-Download the WordPress plugin from this Github page and install it into your WordPress instance.
+Installation
+WordPress Plugin
+Make sure to install the JWT Authentication for WP REST API plugin, as it is required for this integration. [JWT Authentication for WP REST API plugin](https://wordpress.org/plugins/jwt-authentication-for-wp-rest-api/)
+Download the WordPress plugin from this GitHub page and install it into your WordPress instance.
 Activate the plugin.
 Navigate to the plugin settings page (Streamlit Plugin in the WordPress dashboard).
 Set your API key in the settings page. Remember to keep this key secret as it's used for communication between your Streamlit application and the WordPress server.
-2. Streamlit Code Integration
-Copy the following Python code into your Streamlit application, replacing the URL and API_KEY with your own.
+Streamlit Code Integration
+
 
 # python
-Copy code
+Copy the following Python code into your Streamlit application, replacing the URL and API_KEY with your own.
 
 ```
 import requests
