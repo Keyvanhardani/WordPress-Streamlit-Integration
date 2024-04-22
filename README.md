@@ -22,7 +22,6 @@ JWTs are digital signatures used to verify the authenticity and integrity of dat
 
 Copy the following Python code into your Streamlit application, replacing the URL and API_KEY with your own values:
 ```
-python
 import requests
 import streamlit as st
 
