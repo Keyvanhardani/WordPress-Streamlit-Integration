@@ -78,10 +78,35 @@ add_action('rest_api_init', function () {
     ));
 });
 
-function my_api_key_check() {
-    if (!isset($_SERVER['HTTP_X_API_KEY']) || $_SERVER['HTTP_X_API_KEY'] != get_option('api_key')) {
-        return new WP_Error('rest_forbidden', 'Incorrect API Key', array('status' => 403));
-    }
-
-    return true;
+function my_jwt_payload($payload, $user) {
+    $payload['ip_address'] = $_SERVER['REMOTE_ADDR'];
+    return $payload;
 }
+add_filter('jwt_auth_token_before_sign', 'my_jwt_payload', 10, 2);
+
+/**
+ * Bind token to user's IP address
+ */
+function my_jwt_payload($payload, $user) {
+    $payload['ip_address'] = $_SERVER['REMOTE_ADDR'];
+    return $payload;
+}
+add_filter('jwt_auth_token_before_sign', 'my_jwt_payload', 10, 2);
+
+function my_jwt_ip_check($user, $token) {
+    if ($token->data->ip_address !== $_SERVER['REMOTE_ADDR']) {
+        return new WP_Error('rest_forbidden', 'Invalid IP address', array('status' => 403));
+    }
+    return $user;
+}
+add_filter('jwt_auth_token_validate', 'my_jwt_ip_check', 10, 2);
+
+/**
+ * Set token expiration time
+ */
+function my_jwt_expiration($payload, $user) {
+    $expire_time = get_option('jwt_expire_time', 30); // Expiration time in minutes
+    $payload['exp'] = time() + (60 * $expire_time); // Set expiration time
+    return $payload;
+}
+add_filter('jwt_auth_token_before_sign', 'my_jwt_expiration', 10, 2);
