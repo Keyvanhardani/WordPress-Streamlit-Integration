@@ -6,9 +6,10 @@ API_KEY = 'YOUR_API_KEY'  # Set your API key here
 st.set_page_config(layout="wide")
 
 def get_token(username, password):
+    ip_address = st.experimental_get_query_params()['ip'][0]
     response = requests.post(
         'https://yourwordpressurl.com/wp-json/jwt-auth/v1/token',
-        data={'username': username, 'password': password},
+        data={'username': username, 'password': password, 'ip_address': ip_address},
         headers={'X-API-KEY': API_KEY}
     )
     if response.status_code == 200:
@@ -17,9 +18,11 @@ def get_token(username, password):
         return None
 
 def verify_token(token):
+    ip_address = st.experimental_get_query_params()['ip'][0]  
     response = requests.post(
         'https://yourwordpressurl.com/wp-json/jwt-auth/v1/token/validate',
-        headers={'Authorization': f'Bearer {token}', 'X-API-KEY': API_KEY}
+        headers={'Authorization': f'Bearer {token}', 'X-API-KEY': API_KEY},
+        data={'ip_address': ip_address}
     )
     return response.status_code == 200
 
