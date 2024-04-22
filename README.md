@@ -21,8 +21,8 @@ JWTs are digital signatures used to verify the authenticity and integrity of dat
 ## Streamlit Code Integration
 
 Copy the following Python code into your Streamlit application, replacing the URL and API_KEY with your own values:
-
-\`\`\`python
+```
+python
 import requests
 import streamlit as st
 
@@ -76,7 +76,7 @@ else:
                     st.error('Access denied')
     with col3:
         st.write("")
-\`\`\`
+```
 
 Adapt the code to your specific requirements, such as replacing the URL and API key with your own values.
 
